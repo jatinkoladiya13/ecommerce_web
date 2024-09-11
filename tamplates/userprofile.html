@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="main_setting">
+        <div class="setting_1">
+            <form class="outer_setting" action="{% url 'userprofile' %}" method="post">
+                {% csrf_token %}
+
+               <div class="start">
+                <div class="start_1">
+                    <h2>Edit Profile</h2>
+                </div>
+                <div class="start_2">
+                   <div class="profile_image"> 
+                    <img src="/static/img/profile.png" width="64" height="64"  alt="" srcset="">
+                   </div>
+                </div>
+               </div>
+               <div class="edit_1">
+                  <div class="edit">
+                    <label for="Name">First Name</label>
+                    <input type="text" placeholder="First Name" name="first_name" id="first_name" value="{{ initial_data.first_name }}">
+                  </div>
+                  <div class="edit">
+                    <label for="name">Last Name</label>
+                    <input type="text" placeholder="Last Name" name="last_name" id="last_name" value="{{ initial_data.last_name }}">
+                  </div>  
+               </div>
+               <div class="long_field_class">
+                <label for="userField">Username</label>
+                <input type="text" placeholder="Username" name="username" id="username" value="{{ initial_data.user_name }}">
+               </div>
+               <div class="long_field_class">
+                <label for="emailField">Email</label>
+                <input type="text" placeholder="Email" name="email" id="email" value="{{ initial_data.user_email }}">
+               </div>
+               <div class="long_field_class">
+                <label for="mobilenumberField">Mobile Number</label>
+                <input type="tel" placeholder="Mobile Number"  pattern="[0-9]{10}" inputmode="numeric" name="mobileNumber" id="mobileNumber" value="{{ initial_data.mobileNumber}}" required="">
+               </div>
+               &nbsp;
+               <div class="update_button">
+               <input type="submit" value="Update">
+               </div> 
+               &nbsp;   
+            </form>
+        </div>
+    </div>
+
+{% endblock content %}

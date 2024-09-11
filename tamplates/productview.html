@@ -1,0 +1,82 @@
+{% extends "sidebar.html" %}
+{% block content %}
+
+<div class="dialog-container" id="dialogContainer">
+    <div class="dialog-box">
+        <p id="dialogText"></p>
+      <div class="btn-container">
+        <button class="button" onclick="confirmDelete()">Yes</button>
+        <button class="button" onclick="closeDialog()">NO</button>
+      </div>
+    </div>
+  </div>
+
+
+{% if products %}
+
+{% for product in products  %}
+ 
+<div class="single">
+    <h3 class="main-titles">{{product.id}}.  <span class="product-name">{{ product.productName }}</span></h3> 
+    <div class="buttons-container">
+        <button class="button delete-btn"  data-product-id="{{ product.id }}" onclick="openDialog('{{ product}}', '{{product.id}}')">Delete</button>
+        <button class="button update-btn" onclick="window.location.href='{% url 'product_update' product.encrypted_id %}'" >Update</button>
+    </div>
+  </div>
+
+{% endfor %}
+
+
+{% else %}
+
+<div class="emptysmall">
+
+  <h3>Empty</h3>
+</div>
+
+
+{% endif %}
+
+
+<script>
+    let currentProductId =  '';
+    
+    function openDialog(product, productId) {
+      currentProductId = productId;
+      dialogText.textContent = `Are you sure you want to delete '${product}'?`;
+      dialogText.style.color ='#fff';
+      dialogContainer.style.display = 'flex';
+  
+    }
+
+    function closeDialog() {
+        dialogContainer.style.display = 'none';
+    }
+    
+    function confirmDelete(){
+       
+      
+        fetch("/product_delete/",{
+            method:"POST",
+            body: JSON.stringify({
+             "product_id":currentProductId,
+            }),
+            headers: {
+                "Content-type": "application/json",
+            }
+        }).then(response => {
+            if (response.ok) {
+                dialogContainer.style.display = 'none';
+                window.location.reload();
+  
+            } else {
+                console.error("Error product not delete");
+            }
+        }).catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+  
+</script>
+{% endblock content %}

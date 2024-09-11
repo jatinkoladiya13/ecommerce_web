@@ -1,0 +1,181 @@
+{% extends "sidebar.html" %}
+{% block content %}
+
+
+<div class="dialog-container" id="dialogContainer">
+    <div class="dialog-box">
+        <p id="dialogText"></p>
+      <div class="btn-container">
+        <button class="button" onclick="confirmDelete()">Yes</button>
+        <button class="button" onclick="closeDialog()">NO</button>
+      </div>
+    </div>
+  </div>
+
+
+{% if brand %}
+
+{% for brands in brand  %}
+<div class="single">
+    <h3 class="main-titles">{{brands.id}}.  <span class="brand-name">{{ brands }}</span></h3> 
+    <div class="buttons-container">
+        <button class="button delete-btn"  data-brand-id="{{ brands.id }}" onclick="openDialog('{{ brands}}', '{{brands.id}}')">Delete</button>
+        <button class="button update-btn" onclick="showEditInput(this, '{{brands.id}}')" >Update</button>
+        <button class="button save-btn" style="display: none;" onclick="saveUpdatedBrand(this, '{{brands.id}}')">Save</button>
+    </div>
+  </div>
+
+{% endfor %}
+
+
+{% else %}
+
+<div class="emptysmall">
+
+  <h3>Empty</h3>
+</div>
+
+
+{% endif %}
+
+
+<script>
+
+    let currentBrandId =  '';
+    
+    function openDialog(brand, brandId) {
+      currentBrandId = brandId;
+      dialogText.textContent = `Are you sure you want to delete '${brand}'?`;
+      dialogText.style.color ='#fff';
+      dialogContainer.style.display = 'flex';
+  
+    }
+  
+    function closeDialog() {
+        dialogContainer.style.display = 'none';
+    }
+
+    function confirmDelete(){
+       
+      
+        fetch("/brand_delete/",{
+            method:"POST",
+            body: JSON.stringify({
+             "brand_id":currentBrandId,
+            }),
+            headers: {
+                "Content-type": "application/json",
+            }
+        }).then(response => {
+            if (response.ok) {
+                dialogContainer.style.display = 'none';
+                window.location.reload();
+  
+            } else {
+                console.error("Error brand not delete");
+            }
+        }).catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+
+    let currentlyEditing = null;
+    let previousInputValue = null;
+    function showEditInput(button, id){
+      const singleDiv = button.closest('.single');
+      const brandTitle = singleDiv.querySelector('.main-titles');
+      const brandName = brandTitle.querySelector('.brand-name');
+      const containerButton  = singleDiv.querySelector(".buttons-container"); 
+      const  deleteButton = containerButton.querySelector(".delete-btn"); 
+
+
+      if (currentlyEditing !== null && currentlyEditing !== singleDiv) {
+        // Close the currently open edit
+        previousInputValue = inputField.value.trim();
+        closeEdit(currentlyEditing, id,);
+        }
+    
+
+      const inputField = document.createElement('input');
+      inputField.type = 'text';
+      inputField.classList.add('my-input-class');
+      inputField.value = brandName.textContent;
+      
+      brandTitle.innerHTML = '';
+      brandTitle.appendChild(inputField);
+      
+      button.style.display = 'none';
+      deleteButton.style.display ='none';
+      const saveBtn = singleDiv.querySelector('.save-btn');
+      saveBtn.style.display = 'block';
+      currentlyEditing = singleDiv;
+    }
+
+    function saveUpdatedBrand(button, id){
+      const singleDiv = button.closest('.single');
+      const brandTitle = singleDiv.querySelector('.main-titles');
+      const inputField = brandTitle.querySelector('input');
+      const brandName = inputField.value.trim();
+      const containerButton  = singleDiv.querySelector(".buttons-container"); 
+      const  deleteButton = containerButton.querySelector(".delete-btn"); 
+
+      
+      if (brandName === '') {
+        // Restore previous value if input is empty
+        brandName = previousInputValue;
+    }
+      const updateBtn = singleDiv.querySelector('.update-btn');
+    
+
+
+        fetch("/brand_update/",{
+          method:"POST",
+          body: JSON.stringify({
+           "brand_id":id,
+           "brand":brandName,
+          }),
+          headers: {
+              "Content-type": "application/json",
+          }
+      }).then(response => {
+          if (response.ok) {
+            updateBtn.style.display = 'block';
+            deleteButton.style.display = 'block';  
+            button.style.display = 'none';
+            brandTitle.innerHTML = `${id}. <span class="brand-name">${brandName}</span>`;
+
+          } else {
+              console.error("Error this brand is not update", id, brandName);
+          }
+      }).catch(error => {
+          console.error('Error:', error);
+      });
+      currentlyEditing = null;
+      previousInputValue = null;
+    }
+
+    function closeEdit(singleDiv, id,) {
+      const brandTitle = singleDiv.querySelector('.main-titles');
+      const inputField = brandTitle.querySelector('input');
+      const brandName = inputField.value.trim();
+      
+      
+      const originalName = previousInputValue !== null ? previousInputValue : brandName;
+      brandTitle.innerHTML = `${singleDiv.dataset.brandId}. <span class="brand-name">${originalName}</span>`;
+      
+      const deleteBtn = singleDiv.querySelector('.delete-btn');
+      deleteBtn.style.display = 'block';
+
+      const updateBtn = singleDiv.querySelector('.update-btn');
+      updateBtn.style.display = 'block';
+      
+      const saveBtn = singleDiv.querySelector('.save-btn');
+      saveBtn.style.display = 'none';
+
+      currentlyEditing = null;
+      previousInputValue = null;  
+  }
+
+</script>
+{% endblock content %}

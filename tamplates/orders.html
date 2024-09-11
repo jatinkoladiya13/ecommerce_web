@@ -1,0 +1,114 @@
+{% include "header.html" %}
+
+
+<div class="dialog-container" id="dialogContainer">
+    <div class="traking-dialog-box">
+        <div class="stepper-wrapper">
+            <div class="stepper-item completed ">
+              <div class="step-counter"></div>
+              <div class="step-name">Order Received</div>
+            </div>
+            <div class="stepper-item ">
+              <div class="step-counter"></div>
+              <div class="step-name">Shipped</div>
+            </div>
+            <div class="stepper-item ">
+              <div class="step-counter"></div>
+              <div class="step-name">Delivered</div>
+            </div>
+          </div>
+
+          <button class="traking-close" onclick="closeDialog()">OK</button>
+    </div>
+  </div>
+ 
+
+
+{% if  order_items %}
+<section id="cart" class="section-p1">
+  <table width="100%" id="cart-table">
+      <thead>
+          <tr>
+              <td>Image</td>
+              <td>Product</td>
+              <td>Price</td>
+              <td>Quantity</td>
+              <td>Subtotal</td>
+              <td>Status</td>
+          </tr>
+      </thead>
+      <tbody>
+          {% for order_item in order_items %}
+          <tr  data-cart-item-id="{{ order_item.id }}">
+          
+              <td>
+                  <div class="cartimage"><img src="{{order_item.image_url}}"></div>
+              </td>
+                  
+              <td class="overflow-cell">{{order_item.product.productName}}</td>
+              <td class="rate">${{order_item.product.rate}} {{output}}</td>
+              <td>{{order_item.quantity}}</td>
+              <td class="total-cost">${{order_item.product.rate}}  </td>
+              <td>
+                  <h4>Success</h4>
+                  <button class="traking-button" id="traking">Traking</button>
+              </td>
+          </tr>
+          
+          {% endfor %}
+          
+          
+      </tbody>
+  </table>
+</section>
+{% else %}
+
+<section >
+
+  <div class="imgfix">
+      <div class="imgshowcenter">
+
+          <img src="/static/img/7612.jpg" width="20%", hieght="20rem%">
+          <h3>Empty Orders </h3>
+      </div>
+     
+      
+  </div>
+
+ 
+</section>
+
+{% endif %}
+
+
+<script>
+   
+
+    function closeDialog() {
+        dialogContainer.style.display = 'none';
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        var button = document.querySelector("#traking");
+        button.addEventListener("click", function () {
+            dialogContainer.style.display = 'flex';
+            setTimeout(function () {
+                document.querySelector(".stepper-item:nth-child(1)").classList.add("completed");
+                setTimeout(function () {
+                  document.querySelector(".stepper-item:nth-child(2)").classList.add("completed");
+                  document.querySelector(".stepper-item:nth-child(1)").classList.add("completed");
+                  setTimeout(function () {
+                    document.querySelector(".stepper-item:nth-child(3)").classList.add("completed");
+                    document.querySelector(".stepper-item:nth-child(2)").classList.add("completed");
+                  }, 5000);
+                }, 5000);
+              }, 5000); 
+        });
+
+       
+      });
+</script>
+</body>
+
+
+</html>

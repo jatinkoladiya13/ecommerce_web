@@ -1,0 +1,144 @@
+
+{% extends "base.html" %}
+{% block content %}
+
+    <section>
+      
+    </section> 
+
+    <section id="prodetails" class="section-p1">
+        
+         
+        <div class="product-container">
+            <div class="product-images">
+                <img id="mainImage" src="/static/img/products/f1.jpg" alt="Product Image">
+                <div class="thumbnail-wrapper">
+                    <button id="prevBtn" class="nav-btn">
+                        <i class="fa-solid fa-angle-left" style="color: #000000;"></i>
+                    </button>
+                    <div class="thumbnail-container" id="thumbnailContainer">
+
+                        {% for image in images %}
+                            <img class="thumbnail" src="{{image.image_file.url}}" alt="Thumbnail">
+                        {% endfor %}
+
+                        <!-- Add more thumbnails as needed -->
+                    </div>
+                    <button id="nextBtn" class="nav-btn">
+                        <i class="fa-solid fa-angle-right" style="color: #000000;"></i>
+
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="single-pro-details">
+            <h6>Home / T-Shirts</h6>
+            <h4>{{productsData.productName}}</h4>
+            <h2>${{productsData.rate}}</h2>
+            <select>
+                <option>Select Size</option>
+                <option>Xl</option>
+                <option>XXL</option>
+                <option>Small</option>
+                <option>Large</option>
+            </select>
+            <input type="number" value="1">
+            <button  onclick="window.location.href='{% url 'add-cart' product_id=productsData.id %}'" class="normal">Add To Cart</button>
+            <h4>Product Details</h4>
+            <span>{{productsData.description}}</span>
+        </div>
+    </section>
+
+    <section id="product1" class="section-p1">
+        <h2>Featured Product</h2>
+        <p>Summer Collection New Modern Design</p>
+        <div class="pro-container"> 
+
+            {% for product in data %}
+            <div class="pro" onclick="window.location.href='{% url 'sproduct' product_id=product.id %}'">
+                <img src="{{product.images.first.image_file.url}}" alt="">
+                <div class="des">
+                    <span>{{product.brand}}</span>
+                    <h5>{{product.productName}}</h5>
+                    <div class="star">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <h4>${{product.rate}}</h4>
+                </div>
+                <a href="{% url 'add-cart' product_id=product.id %}"><i class="fas fa-shopping-cart cart"></i></a>
+            </div>
+            
+            {% endfor %}
+           
+            
+    </section>
+
+
+    <script>
+        const mainImage = document.getElementById('mainImage');
+        const thumbnails = document.querySelectorAll('.thumbnail');
+        const thumbnailContainer = document.getElementById('thumbnailContainer');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+    
+            thumbnails[0].classList.add('selected');
+            mainImage.src = thumbnails[0].src;
+
+        thumbnails.forEach(thumbnail => {
+            thumbnail.addEventListener('click', function () {
+                
+                thumbnails.forEach(item => {
+                    item.classList.remove('selected');
+                });
+
+                this.classList.add('selected');
+                mainImage.src = this.src;
+            });
+        });
+    
+        const updateButtonsVisibility = () => {
+            const scrollLeft = thumbnailContainer.scrollLeft;
+            const scrollWidth = thumbnailContainer.scrollWidth;
+            const clientWidth = thumbnailContainer.clientWidth;
+    
+            if (scrollLeft > 0) {
+                prevBtn.classList.remove('hidden');
+            } else {
+                prevBtn.classList.add('hidden');
+            }
+    
+            if (scrollLeft + clientWidth < scrollWidth) {
+                nextBtn.classList.remove('hidden');
+            } else {
+                nextBtn.classList.add('hidden');
+            }
+        };    
+
+
+        prevBtn.addEventListener('click', function () {
+            thumbnailContainer.scrollBy({
+                top: 0,
+                left: -100, // Adjust the value as needed
+                behavior: 'smooth'
+            });
+        });
+    
+        nextBtn.addEventListener('click', function () {
+            thumbnailContainer.scrollBy({
+                top: 0,
+                left: 100, // Adjust the value as needed
+                behavior: 'smooth'
+            });
+        });
+        thumbnailContainer.addEventListener('scroll', updateButtonsVisibility);
+
+        // Initial check
+        updateButtonsVisibility();
+    </script> 
+
+    {% endblock content %}

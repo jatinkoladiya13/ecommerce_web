@@ -1,0 +1,46 @@
+
+
+{% extends "sidebar.html" %}
+{% block content %}
+<div class="form-main-div">
+    <div class="wrapper">
+      <h1 class="main-title">Add Brand</h1>    
+      &nbsp;
+      <form method="post" id="brandForm">  
+        {% csrf_token %}
+
+        <div class="field email">
+          <div class="input-area">
+           <i class="fa-solid fa-list" style="color: #000000;"></i>
+           <input type="text" placeholder="Enter Brand" name="brand" id="brand" value="" required="">
+          </div>
+        </div>
+    
+        &nbsp;
+        <input type="submit" value="Save">
+        &nbsp;
+      </form>  
+
+    </div>
+
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+        var form = document.getElementById("brandForm");
+
+        form.addEventListener("submit", function(event){
+            var category = document.getElementById("brand");
+            var regex = /^[A-Za-z]+$/;
+            
+            if (!regex.test(category.value)) {
+                alert("Brand name should contain only letters");
+                event.preventDefault(); // Prevent form submission
+            }
+
+            // Additional validation logic if needed
+        });
+
+    });  
+</script>
+{% endblock content %}
+

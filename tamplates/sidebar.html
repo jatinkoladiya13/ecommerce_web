@@ -1,0 +1,45 @@
+{% include "header.html" %}
+ 
+<div class="sidebar">
+    <header>Cara</header>
+    <ul>
+        <li><a href="{% url 'dashboard' %}"  class="{% if request.path == "/dashboard/" %}
+            active
+        {% endif %}" ><img src="/static/img/dashboard.svg"  width="25px" style="filter: {% if request.path == "/dashboard/" %} invert(0%) sepia(0%) saturate(7500%) hue-rotate(338deg) brightness(91%) contrast(109%) {% else %}invert(100%) sepia(6%) saturate(0%) hue-rotate(115deg) brightness(108%) contrast(108%); {% endif %}" ></i>Dashboard</a></li>
+        
+        <li><a href="{% url 'category' %}"  class="{% if request.path == "/category/" %}
+            active
+        {% endif %}"  ><img src="/static/img/addcategory.svg"  width="25px" style="filter: {% if request.path == "/category/" %} invert(0%) sepia(0%) saturate(7500%) hue-rotate(338deg) brightness(91%) contrast(109%) {% else %}invert(100%) sepia(6%) saturate(0%) hue-rotate(115deg) brightness(108%) contrast(108%); {% endif %}"></i>Add Category</a></li>
+
+        <li><a href="{% url 'category_view' %}"  class="{% if request.path == "/category_view/" %}
+            active
+        {% endif %}"  ><img src="/static/img/categoryview.svg"  width="25px" style="filter: {% if request.path == "/category_view/" %} invert(0%) sepia(0%) saturate(7500%) hue-rotate(338deg) brightness(91%) contrast(109%) {% else %}invert(100%) sepia(6%) saturate(0%) hue-rotate(115deg) brightness(108%) contrast(108%); {% endif %}" ></i>Categorys View</a></li>
+        
+        <li><a href="{% url 'productadd' %}"  class="{% if request.path == "/productadd/" %}
+            active
+        {% endif %}"  ><img src="/static/img/productadd.svg" width="25px" style="filter: {% if request.path == "/productadd/" %} invert(0%) sepia(0%) saturate(7500%) hue-rotate(338deg) brightness(91%) contrast(109%) {% else %}invert(100%) sepia(6%) saturate(0%) hue-rotate(115deg) brightness(108%) contrast(108%); {% endif %}" ></i>Product Add</a></li>
+
+        <li><a href="{% url 'product_view' %}"  class="{% if request.path == "/product_view/" %}
+            active
+        {% endif %}"  ><img src="/static/img/productadd.svg" width="25px"   style="filter: {% if request.path == "/product_view/" %} invert(0%) sepia(0%) saturate(7500%) hue-rotate(338deg) brightness(91%) contrast(109%) {% else %}invert(100%) sepia(6%) saturate(0%) hue-rotate(115deg) brightness(108%) contrast(108%); {% endif %}">Product views</a></li>
+
+        <li><a href="{% url 'brand' %}"  class="{% if request.path == "/brand/" %}
+            active
+        {% endif %}"  ><img src="/static/img/brandicon.svg" width="25px"   style="filter: {% if request.path == "/brand/" %} invert(0%) sepia(0%) saturate(7500%) hue-rotate(338deg) brightness(91%) contrast(109%) {% else %}invert(100%) sepia(6%) saturate(0%) hue-rotate(115deg) brightness(108%) contrast(108%); {% endif %}">Brand</a></li>
+
+
+        <li><a href="{% url 'brand_view' %}"  class="{% if request.path == "/brand_view/" %}
+            active
+        {% endif %}"  ><img src="/static/img/brandicon.svg" width="25px"   style="filter: {% if request.path == "/brand_view/" %} invert(0%) sepia(0%) saturate(7500%) hue-rotate(338deg) brightness(91%) contrast(109%) {% else %}invert(100%) sepia(6%) saturate(0%) hue-rotate(115deg) brightness(108%) contrast(108%); {% endif %}">Brand views</a></li>
+        
+    </ul>
+
+</div>
+<div class="content">
+    {% block content %}
+    {% endblock %}
+</div>
+
+   </body>
+
+</html>   

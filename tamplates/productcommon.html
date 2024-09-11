@@ -1,0 +1,245 @@
+
+<div class="main_setting">
+  <div class="setting_1">
+      <form id="uploadForm" class="outer_setting" action="{% if mode == 'add' %}{% url 'productadd' %}{% else %}{% url 'product_update' encrypted_id %}{% endif %}" method="post" enctype="multipart/form-data"> 
+          {% csrf_token %}
+
+         <div class="start">
+          <h2>{% if mode == 'add' %}Create a New Product{% else %} <i class="fa-solid fa-arrow-left" id="goBack" style="color: #000000; margin-right: 35px;"></i> Update Product {{ product.productName }}{% endif %}</h2>
+         </div>
+  
+
+         <div class="edit_1">
+          <div class="edit">
+              <label for="userField">Product Name</label>
+              <input type="text" placeholder="Name"  name="product_name" id="product_name"  value="{% if mode == 'update' %}{{ product.productName }}{% endif %}" required >
+          </div>
+          <div class="edit">
+            <label for="name">Brand</label>
+            <select name="brand" id="brand" required>
+              {% if brands  %}
+              
+              {% for brand in brands %}
+              <option value="{{ brand.id }}" {% if mode == 'update' and brand.id == product.brand.id %}selected{% endif %} >{{ brand }}</option>
+              {% endfor %}
+
+              {% else %}
+              <option >No Data</option>
+
+              {% endif %}
+            
+          </select>
+          </div>  
+       </div>
+         <div class="long_field_class">
+          <label for="emailField">Description</label><br>
+          <textarea placeholder="Description" id="description" name="description" rows="10"  required cols="50" style="border: 1px solid #1a1a1a;
+          padding: 10px;
+          width: 100%;
+          font-size: 14px;
+          border-radius: 5px;
+          outline: none; 
+          margin-top: 7px;" >{% if mode == 'update' %}{{ product.description }}{% endif %}</textarea>
+         </div>
+         <div class="edit_1">
+          <div class="edit">
+            <label for="Price">Price</label>
+            <input type="number" placeholder="Price"  name="price" id="price" value="{% if mode == 'update' %}{{ product.rate }}{% endif %}" required>
+          </div>
+          <div class="edit">
+            <label for="name">Category</label>
+            <select name="last_name" id="last_name" required>
+               
+              {% if categorys %}
+              {% for category in categorys %}
+              <option value="{{ category.id }}" {% if mode == 'update' and category.id == product.category.id %}selected{% endif %} >{{ category }}</option>
+              {% endfor %}
+              
+              {% else %}
+              
+              <option >No Data</option>
+              {% endif %}
+
+              
+              
+          </select>
+          </div>  
+       </div>
+       {% comment %} <div class="long_field_class">
+          <label for="userField">Add images</label>
+          <input type="file" name="images" id="images" required multiple accept="image/*">
+         </div> {% endcomment %}
+           
+         <div class="box">
+          <div class="input-bx">
+           <h2 class="upload-area-title">Upload Images</h2>
+           <input type="file" name="upload" id="upload" accept=".doc,.docx,.pdf,.jpeg, .jpg"  hidden>
+           <label for="upload" class="uploadlabel">
+             <span><i class="fa fa-cloud-upload"></i></span>
+              <p>Click To Upload</p>
+           </label>
+          </div>
+        </div>
+
+        <div id="filewrapper">
+          <h3 class="uploaded">Uploaded Documents</h3> 
+        
+        </div>
+
+
+         &nbsp;   
+         <div class="update_button">
+         <input id="mysubmit" type="submit" value=" {% if mode == 'add' %}Publish {% else %} Update {% endif %}">
+         </div> 
+         &nbsp;   
+      </form>
+  </div>
+</div>
+
+<script>
+
+
+document.addEventListener("DOMContentLoaded", function(){
+  const input = document.getElementById("upload");
+  const filewrapper = document.getElementById("filewrapper");
+  const uploadedHeader = document.querySelector(".uploaded");
+  const uploadForm = document.getElementById("uploadForm");
+  const goBackButton = document.getElementById("goBack");
+  let fileList = [];
+
+
+  if (goBackButton) {
+      goBackButton.addEventListener("click", function() {
+          window.history.back(); // Navigate back in the browser history
+      });
+  }
+  
+  {% if mode == 'update' %}
+  const imageList = [
+      {% for image in images %}
+          { url: "{{ image.image_file.url|escapejs }}", name: "{{ image.image_file.name|escapejs }}" },
+      {% endfor %}
+  ];
+
+  imageList.forEach(image => {
+      
+      // Create a Blob object from the existing image URL to simulate file input
+      fetch(image.url)
+          .then(res => res.blob())
+          .then(blob => {
+              const file = new File([blob], image.name, { type: blob.type });
+              fileList.push(file);
+              fileshow(extractFileName(image.name), file);
+          });
+  });
+{% endif %}
+function extractFileName(filePath) {
+  return filePath.split('/').pop();
+}
+  
+  input.addEventListener("change", (e)=>{
+    let file = e.target.files[0];
+    if (file && !fileList.some(f => f.name === file.name)) {
+      let fileName = file.name;
+      uploadedHeader.style.display = "block";
+      fileList.push(file);
+      fileshow(fileName, file);
+      
+      // Clear the input so the same file can be re-uploaded if removed
+      input.value = '';
+    }
+  
+  });
+   function fileshow(fileName,file){
+
+
+    const showfileboxElem = document.createElement("div");
+    showfileboxElem.classList.add("showfilebox");
+    const leftElem = document.createElement("div");
+    leftElem.classList.add("left");
+    const imgElem = document.createElement("img");
+    imgElem.classList.add("uploadedimg");
+    imgElem.src = URL.createObjectURL(file);
+
+    
+    imgElem.alt = fileName;
+    leftElem.appendChild(imgElem);
+    const filetitleElem = document.createElement("h3");
+    filetitleElem.innerHTML= fileName;
+    leftElem.append(filetitleElem);
+    showfileboxElem.append(leftElem);
+    const rightElem = document.createElement("div");
+    rightElem.classList.add("right");
+    showfileboxElem.append(rightElem);
+    const crossElem = document.createElement("span");
+    crossElem.innerHTML ="&#215";
+    rightElem.append(crossElem);
+    filewrapper.append(showfileboxElem);
+
+    crossElem.addEventListener("click",function(){
+      filewrapper.removeChild(showfileboxElem);
+      fileList = fileList.filter(f => f !== file)
+      console.error(fileList);
+    });
+   }  
+
+
+  
+  uploadForm.addEventListener("submit", function(event) {
+    event.preventDefault();
+
+      if (fileList.length === 0) {  
+        alert("Add product images");
+        return;
+      }
+      
+      
+      const formData = new FormData(this);
+      fileList.forEach(file => formData.append('upload', file));
+
+      fetch(uploadForm.action, {
+        method:'POST',
+        body:formData,
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest'
+      }
+      }).then(response=>{
+        if(response.ok){
+          return response.json();
+        }else{
+          console.error('Error uploading files');
+              response.json().then(data => {
+                alert(data.error);
+            }).catch(err => {
+                alert('An error occurred while processing your request.');
+            });
+        }
+      }).then(data => {
+        if (data.redirect_url) {
+            window.location.href = data.redirect_url;
+        } else {
+  
+            console.log('Files uploaded successfully');
+        }
+    }).catch(error=>{
+        console.error('Error:', error);
+      });
+
+});
+
+});
+
+</script>
+{% comment %}     
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', this.action, true);
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          console.log('Files uploaded successfully'); 
+          
+        } else {
+          console.error('Error uploading files');
+        }
+      };
+
+      xhr.send(formData); {% endcomment %}

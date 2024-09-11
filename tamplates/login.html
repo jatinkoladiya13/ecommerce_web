@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block content %}
+
+  <section>
+    <div class="form-main-div">
+        <div class="wrapper">
+          <h1 class="main-title">Sign In</h1>    
+          &nbsp;
+          <form method="post">
+            {% csrf_token %}
+
+            <div class="field email">
+              <div class="input-area">
+               <i class="fa-solid fa-envelope" style="color: #000000;"></i>
+               <input type="email" placeholder="Email Address" name="email" id="email" value="" required="">
+              </div>
+            </div>
+            <div class="field password">
+              <div class="input-area">
+                <i class="fa-solid fa-lock" style="color: #000000;"></i>
+                <input type="password" placeholder="Password" name="password" id="password" value="" required="">
+                <i class="fa-solid fa-eye fa-sm" id="showPassword" style="color: #000000;"></i>
+                <i class="fa-sharp fa-solid fa-eye-slash" id="hidePassword" style="color: #000000;"></i>
+              </div>
+            </div>
+            <div class="pass-txt"><a href="/sendlink">Forgot password?</a></div>
+            &nbsp;
+            <input type="submit" value="Login">
+            &nbsp;
+            <div class="sign-txt">Not yet member? <a href="/signup" id="login">Signup now</a></div>
+          </form>  
+
+        </div>
+
+    </div>
+
+  </section>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function(){
+        var passwordInput = document.getElementById("password");
+        var showPasswordIcon = document.getElementById("showPassword");
+        var hidePasswordIcon = document.getElementById("hidePassword");
+               
+        passwordInput.type = "password"; 
+        showPasswordIcon.style.display = "none";
+        hidePasswordIcon.style.display = "block";   
+  
+        showPasswordIcon.addEventListener("click", function(){
+           passwordInput.type = "password";
+           showPasswordIcon.style.display  = "none";
+           hidePasswordIcon.style.display  = "block";
+        });
+  
+        hidePasswordIcon.addEventListener("click", function(){
+            passwordInput.type = "text";
+            showPasswordIcon.style.display = "block";
+            hidePasswordIcon.style.display = "none";
+        })
+    });
+  </script>
+{% endblock content %}
+
+</body>
+</html>

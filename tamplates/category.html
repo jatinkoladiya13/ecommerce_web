@@ -1,0 +1,48 @@
+
+
+{% extends "sidebar.html" %}
+{% block content %}
+
+
+<div class="form-main-div">
+    <div class="wrapper">
+      <h1 class="main-title">Add category</h1>    
+      &nbsp;
+      <form method="post" id="categoryForm">  
+        {% csrf_token %}
+
+        <div class="field email">
+          <div class="input-area">
+           <i class="fa-solid fa-list" style="color: #000000;"></i>
+           <input type="text" placeholder="Enter Category" name="category" id="category" value="" required="">
+          </div>
+        </div>
+    
+        &nbsp;
+        <input type="submit" value="Save">
+        &nbsp;
+      </form>  
+
+    </div>
+
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+        var form = document.getElementById("categoryForm");
+
+        form.addEventListener("submit", function(event){
+            var category = document.getElementById("category");
+            var regex = /^[A-Za-z]+$/;
+            
+            if (!regex.test(category.value)) {
+                alert("Category name should contain only letters");
+                event.preventDefault(); // Prevent form submission
+            }
+
+            // Additional validation logic if needed
+        });
+
+    });  
+</script>
+{% endblock content %}
+

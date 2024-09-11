@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+   
+    <section>
+        <div class="form-main-div">
+            <div class="wrapper">
+                <h1 class="main-title">Forgot Password</h1>    
+                &nbsp;
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="field email">
+                        <p class="main_p">Enter your email for the verification proccess,</p>
+                        <p class="main_p"> we will send link to your email.</p>
+                        <div class="input-area">
+                         <i class="fa-solid fa-envelope" style="color: #000000;"></i>
+                         <input type="email" placeholder="Email Address" name="email" id="email" value="" required="">
+                        </div>
+                    </div>
+                    &nbsp;
+                    <input type="submit" value="Continue">
+                </form>   
+            </div>   
+        </div>
+    </section>    
+ 
+{% endblock content %}
+</body>
+</html>

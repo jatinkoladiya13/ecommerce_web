@@ -1,0 +1,303 @@
+{% extends "base.html" %}
+{% block content %}
+
+ 
+  
+    <section id="feature" class="section-p1">
+        <div class="fe-box">
+            <img src="/static/img/features/f1.png" alt="">
+            <h6>Online product</h6>
+        </div>
+        <div class="fe-box">
+            <img src="/static/img/features/f2.png" alt="">
+            <h6>Online Order</h6>
+        </div>
+        <div class="fe-box">
+            <img src="/static/img/features/f3.png" alt="">
+            <h6>Save Money</h6>
+        </div>
+        <div class="fe-box">
+            <img src="/static/img/features/f4.png" alt="">
+            <h6>Promotions</h6>
+        </div>
+        <div class="fe-box">
+            <img src="/static/img/features/f5.png" alt="">
+            <h6>Happy Sell</h6>
+        </div>
+        <div class="fe-box">
+            <img src="/static/img/features/f6.png" alt="">
+            <h6>24/7 Support</h6>
+        </div>
+    </section>
+
+    <section>
+        <div class="slider">
+            <div class="slides">
+                <div class="slide"><img src="static/img/lifestyle-concept-portrait-cheerful-happy-ginger-red-hair-girl-with-joyful-exciting-smiling-t.jpg" alt="Slide 1"></div>
+                <div class="slide"><img src="static/img/lifestyle-technology-concept-portrait-cheerful-happy-ginger-red-hair-girl-with-joyful-exc.jpg" alt="Slide 2"></div>
+                <div class="slide"><img src="static/img/people-technology-concept-close-up-portrait-young-beautiful-attractive-redhair-girl-happy-smilin.jpg" alt="Slide 3"></div>
+            </div>
+            <div class="navigation">
+                <button class="prev">❮</button>
+                <button class="next">❯</button>
+            </div>
+            <div class="dots">
+                <span class="dot" data-slide="0"></span>
+                <span class="dot" data-slide="1"></span>
+                <span class="dot" data-slide="2"></span>
+            </div>
+        </div>
+    </section>
+
+    <section id="product1" class="section-p1">
+        <h2>Featured Productss</h2>
+        <p>Summer Collection New Modern Design</p>
+        <div class="pro-container">
+
+            {% for product in products %}
+
+            <div class="pro"  onclick="window.location.href='{% url 'sproduct' product_id=product.id %}'">
+                 {% if  product.images.first.image_file.url %}
+                 
+                 <img src="{{ product.images.first.image_file.url}}" alt="">
+                 {% else %}
+                 
+                 <img src="/static/img/products/n1.jpg" alt="">
+
+                 {% endif %}
+
+                
+                <div class="des">
+
+
+                    {% if product.brand %}
+                    <span>{{ product.brand }}</span>
+                    {% else %}
+                    <span>Brand</span>
+                    {% endif %}
+                    
+                    <h5>{{ product.productName }}</h5>
+                    <div class="star">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <h4>${{ product.rate }}</h4>
+                </div>
+                <a href="{% url 'add-cart' product_id=product.id %}"><i class="fas fa-shopping-cart cart"></i></a>
+            </div>
+
+            {% endfor %}
+
+    
+        </div>
+    </section>
+
+    <section >
+        <div class="image-banner-container">
+            <img src="static/img/banner/b1.jpg" alt="Image 1">
+            <img src="static/img/banner/b2.jpg" alt="Image 2">
+        </div>
+    </section>
+
+    <section id="product1" class="section-p1">
+        <h2>New Arrivals</h2>
+        <p>Summer Collection New Modern Design</p>
+        <div class="pro-container">
+            <div class="pro">
+                <img src="/static/img/products/n1.jpg" alt="">
+                <div class="des">
+                    <span>addidas</span>
+                    <h5>Carton Asstronaut T-Shirts</h5>
+                    <div class="star">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <h4>$78</h4>
+                </div>
+                <a href="#"><i class="fas fa-shopping-cart cart"></i></a>
+            </div>
+
+            <div class="pro">
+                <img src="/static/img/products/n2.jpg" alt="">
+                <div class="des">
+                    <span>zara</span>
+                    <h5>Carton Asstronaut T-Shirts</h5>
+                    <div class="star">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <h4>$118</h4>
+                </div>
+                <a href="#"><i class="fas fa-shopping-cart cart"></i></a>
+            </div>
+
+            <div class="pro">
+                <img src="/static/img/products/n3.jpg" alt="">
+                <div class="des">
+                    <span>US Polo Asian</span>
+                    <h5>Carton Asstronaut T-Shirts</h5>
+                    <div class="star">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <h4>$237</h4>
+                </div>
+                <a href="#"><i class="fas fa-shopping-cart cart"></i></a>
+            </div>
+
+            <div class="pro">
+                <img src="/static/img/products/n4.jpg" alt="">
+                <div class="des">
+                    <span>Puma</span>
+                    <h5>Carton Asstronaut T-Shirts</h5>
+                    <div class="star">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <h4>$112</h4>
+                </div>
+                <a href="#"><i class="fas fa-shopping-cart cart"></i></a>
+            </div>
+
+            <div class="pro">
+                <img src="/static/img/products/n5.jpg" alt="">
+                <div class="des">
+                    <span>Jack&Jones</span>
+                    <h5>Carton Asstronaut T-Shirts</h5>
+                    <div class="star">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <h4>$157</h4>
+                </div>
+                <a href="#"><i class="fas fa-shopping-cart cart"></i></a>
+            </div>
+
+            <div class="pro">
+                <img src="/static/img/products/n6.jpg" alt="">
+                <div class="des">
+                    <span>Allen Solly</span>
+                    <h5>Cashual Shirts for Man</h5>
+                    <div class="star">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <h4>$313</h4>
+                </div>
+                <a href="#"><i class="fas fa-shopping-cart cart"></i></a>
+            </div>
+
+            <div class="pro">
+                <img src="/static/img/products/n7.jpg" alt="">
+                <div class="des">
+                    <span>Louis Philippe</span>
+                    <h5>Carton Asstronaut T-Shirts</h5>
+                    <div class="star">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <h4>$94</h4>
+                </div>
+                <a href="#"><i class="fas fa-shopping-cart cart"></i></a>
+            </div>
+
+            <div class="pro">
+                <img src="/static/img/products/n8.jpg" alt="">
+                <div class="des">
+                    <span>US Polo Asian</span>
+                    <h5>Carton Asstronaut T-Shirts</h5>
+                    <div class="star">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <h4>$129</h4>
+                </div>
+                <a href="#"><i class="fas fa-shopping-cart cart"></i></a>
+            </div>
+        </div>
+    </section>
+
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function(){
+            const slides = document.querySelector('.slides');
+            const slide = document.querySelectorAll('.slide');
+            const prevBtn = document.querySelector('.prev');
+            const nextBtn = document.querySelector('.next');
+            const dots = document.querySelectorAll('.dot');
+        
+            let index = 0;
+        
+            function showSlide(n) {
+                index = (n + slide.length) % slide.length;
+                slides.style.transform = 'translateX(' + (-index * 100) + '%)';
+                updateDots();
+            }
+        
+            function updateDots() {
+                dots.forEach((dot, i) => {
+                    dot.classList.toggle('active', i === index);
+                });
+            }
+        
+            prevBtn.addEventListener('click', () => {
+                showSlide(index - 1);
+            });
+        
+            nextBtn.addEventListener('click', () => {
+                showSlide(index + 1);
+            });
+        
+            dots.forEach(dot => {
+                dot.addEventListener('click', () => {
+                    showSlide(parseInt(dot.getAttribute('data-slide')));
+                });
+            });
+        
+            setInterval(() => {
+                showSlide(index + 1);
+            }, 3000);
+        
+            showSlide(index);
+        });
+       
+    
+       
+    
+        
+    </script>
+    {% endblock content %}
+    <script src="script.js" class="section-p1 section-m1"></script>
+  
+</body>
+
+
+</html>

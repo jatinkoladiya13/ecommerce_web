@@ -1,0 +1,153 @@
+{% include "header.html" %}
+
+    <section>
+        <div class="search-box">
+            <div class="row">
+                <input class="search-input" type="text" id="input-box" placeholder="Search anything" autocomplete="off">
+               <button class="search-button"><i class="fa-solid fa-magnifying-glass" style="color: #000000;"></i></button>
+            </div>
+            <div class="result-box">
+            </div>
+        </div>
+    </section>
+
+    <section id="product1" class="section-p1">
+        
+        <div class="pro-container">
+            {% for product in data %}
+
+            <div class="pro"  onclick="window.location.href='{% url 'sproduct' product_id=product.id %}'">
+                 {% if  product.images.first.image_file.url %}
+                 
+                 <img src="{{ product.images.first.image_file.url}}" alt="">
+                 {% else %}
+                 
+                 <img src="/static/img/products/n1.jpg" alt="">
+
+                 {% endif %}
+
+                
+                <div class="des">
+
+
+                    {% if product.brand %}
+                    <span>{{ product.brand }}</span>
+                    {% else %}
+                    <span>Brand</span>
+                    {% endif %}
+                    
+                    <h5>{{ product.productName }}</h5>
+                    <div class="star">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <h4>${{ product.rate }}</h4>
+                </div>
+                <a href="{% url 'add-cart' product_id=product.id %}"><i class="fas fa-shopping-cart cart"></i></a>
+            </div>
+
+            {% endfor %}
+        </div>
+    </section>
+
+    <section id="pagination" class="section-p1">
+
+        {% if data.has_previous %}
+        <a href="?page=1" tabindex="-1">First</a>
+        <a href="?page={{ data.previous_page_number }}" tabindex="-1">Previous</a>
+        {% endif %}
+       
+        {% for num in data.paginator.page_range %}
+        {% if data.number == num %}
+            <a href="?page={{ num }}" class="current">{{ num }}</a>
+        {% else %}
+            <a href="?page={{ num }}">{{ num }}</a>
+        {% endif %}
+        {% endfor %}
+       
+        {% if data.has_next %}
+            <a href="?page={{ data.next_page_number }}">Next</a>
+        {% endif %}
+
+
+    </section>
+
+
+    {% include "footer.html" %}
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function(){
+           
+            const resultBox = document.querySelector(".result-box");
+            const inputBox = document.getElementById("input-box");
+            const searchButton = document.querySelector(".search-button");
+            
+            inputBox.addEventListener("keyup", performSearch);
+
+            // Event listener for Enter key
+            inputBox.addEventListener("keyup", function(event) {
+                if (event.key === "Enter") {
+                    const query = inputBox.value;
+                    url =`/shop/?q=${query}`;
+                    window.location.href = url;
+                }
+            });
+
+            // Event listener for search button click
+            searchButton.addEventListener("click", searchbutton);
+
+            function searchbutton(){
+                const query = inputBox.value;
+                url =`/shop/?q=${query}`;
+                 window.location.href = url;
+            }
+
+    
+           
+            function performSearch(){
+                const query = inputBox.value;
+                if (query.length) {
+                    resultBox.style.display = "block"; 
+                    fetch(`/search/?q=${query}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            displayResults(data.data);
+                        });
+                } else {
+                    resultBox.innerHTML = "";
+                }
+                
+            }
+            
+            function displayResults(results) {
+                if (results.length) {
+                    const content = results.map(item => `<li>${item}</li>`).join('');
+                    resultBox.innerHTML = `<ul>${content}</ul>`;
+                } else {
+                    resultBox.innerHTML = "";
+                }
+            }
+
+            
+            // Event listener for suggestion click
+            resultBox.addEventListener("click", function(event) {
+                if (event.target.tagName === "LI") {
+                    const suggestion = event.target.textContent;
+                    console.log(suggestion);
+                    inputBox.value = suggestion;
+                    resultBox.style.display = "none";
+                    url =`/shop/?q=${suggestion}`;
+                    window.location.href = url; 
+                
+                }
+            });
+        });
+    </script>
+
+</body>
+
+
+</html>

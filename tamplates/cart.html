@@ -1,0 +1,319 @@
+{% include "header.html" %}
+
+   
+    {% if cart_items %}
+    <section id="cart" class="section-p1">
+        <table width="100%" id="cart-table">
+            <thead>
+                <tr>
+                    <td>Remove</td>
+                    <td>Image</td>
+                    <td>Product</td>
+                    <td>Price</td>
+                    <td>Quantity</td>
+                    <td>Subtotal</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cart_item in cart_items %}
+                <tr  data-cart-item-id="{{ cart_item.id }}">
+                    <td><a href="#" class="remove-item" data-item-id="{{ cart_item.id }}"><i class="far fa-times-circle" ></i></a></td>
+                    <td>
+                        <div class="cartimage"><img src="{{cart_item.image_url}}"></div>
+                    </td>
+                        
+                    <td class="overflow-cell">{{cart_item.product.productName}}</td>
+                    <td class="rate">${{cart_item.product.rate}} {{output}}</td>
+                    <td><input type="number" value="{{cart_item.quantity}}" min="1" class="quantity-input" data-cart-item-id="{{ cart_item.id }}" onchange="updateTotal(this, {{cart_item.id}}, true)"></td>
+                    <td class="total-cost">${{cart_item.product.rate}}  </td>
+                </tr>
+                
+                {% endfor %}
+                
+                
+            </tbody>
+        </table>
+    </section>
+
+    <section id="cart-add" class="section-p1">
+        <div id="coupon">
+            <h3>Apply coupon</h3>
+            <div>
+                <input type="text" placeholder="Enter your coupon">
+                <button type="submit" class="normal">Apply</button>
+            </div>
+        </div>
+        <div id="subtotal">
+            <h3>Cart Totals</h3>
+            <table>
+                <tr>
+                    <td id="cart-item-count" >Cart Subtotal ({{ cart_items|length }} items)</td>
+                    <td id="totalAmount">$00.00</td>
+                </tr>
+                <tr>
+                    <td>Shipping</td>
+                    <td>Free</td>
+                </tr>
+                <tr>
+                    <td><strong>Total</strong></td>
+                    <td ><strong  id="amount">$00.00</strong></td>
+                </tr>
+            </table>
+            <form  action="{% url 'checkout_session' user.id %}">
+                {% csrf_token %}
+                <button class="normal" >proceed to checkout</button>
+            </form>
+            {% comment %} <button class="normal" onclick="payrazorpay()">proceed to checkout</button> {% endcomment %}
+        </div>
+    </section>
+    
+    {% else %}
+    <section >
+
+        <div class="imgfix">
+            <div class="imgshowcenter">
+
+                <img src="/static/img/7612.jpg" width="20%", hieght="20rem%">
+                <h3>Empty Cart </h3>
+            </div>
+           
+            
+        </div>
+      
+       
+    </section>
+    
+    {% endif %}
+    
+    {% include "footer.html" %} 
+
+
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+        window.addEventListener('load', function() {
+            const quantityInputs = document.querySelectorAll('.quantity-input');
+            quantityInputs.forEach(input => {
+                const cartItemId = input.dataset.cartItemId; 
+                updateTotal(input, cartItemId, false); 
+            });
+            calculate();
+        });
+        
+        function calculate(){
+            let subtotal = 0;
+
+            const totalCostElements = document.querySelectorAll('.total-cost');
+            totalCostElements.forEach(element => {
+                const totalAmount = parseFloat(element.textContent.replace('$', '').replace(',', ''));
+                subtotal += totalAmount;
+                
+            });
+            const subtotalElement = document.getElementById('totalAmount');
+        
+            subtotalElement.textContent = new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD'
+              }).format(subtotal);
+
+              var amountElement = document.getElementById('amount');
+              amountElement.textContent = new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD'
+              }).format(subtotal);
+
+              updateCartItemCount();
+        }
+        
+
+        function updateCartItemCount() {
+            const cartItemCountElement = document.getElementById('cart-item-count');
+            const quantityInputs = document.querySelectorAll('.quantity-input');
+            let itemCount = 0;
+            quantityInputs.forEach(input => {
+                itemCount += parseInt(input.value);
+            });
+            cartItemCountElement.textContent = 'Cart Subtotal (' + itemCount + ' items)';
+        }
+
+
+        function updateTotal(input, id, status) {
+            input.disabled = true;
+
+            const parentRow = input.parentNode.parentNode;
+
+            const quantityInput = parentRow.querySelector('.quantity-input');
+            const totalCostElement = parentRow.querySelector('.total-cost');
+            const productRate = parentRow.querySelector('.rate');
+             
+            const rate = parseFloat(productRate.textContent.replace('$', ''));
+            const quantity = parseInt(quantityInput.value);
+
+            if (quantity < 1) {
+                quantity = 1;
+                quantityInput.value = quantity; 
+                
+            }
+            
+            const newTotal = rate * quantity;
+            const formattedAmount = new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD'
+              }).format(newTotal);
+  
+            totalCostElement.textContent = formattedAmount;
+            
+            if(status){
+                fetch("/update_quantity_cart/",{
+                    method:"POST",
+                    body: JSON.stringify({
+                        cart_item_id:id,
+                        update_quantity:quantity, 
+                    }),
+                    headers: {
+                        "Content-type": "application/json",
+                    }
+                }).then(response => {
+                    if (response.ok) {
+                        input.disabled = false;
+                        calculate();
+                    } else {
+                        console.error("Error quantity not updates");
+                    }
+                }).catch(error => {
+                    console.error('Error:', error);
+                });
+            }else{
+                input.disabled = false; 
+            }
+           
+
+           
+            
+
+        }
+
+       
+        
+        document.addEventListener("DOMContentLoaded", function(){
+            var removeButtons = document.querySelectorAll(".remove-item");
+         
+            removeButtons.forEach(function(button) {
+                button.addEventListener("click", function(e){
+                    e.preventDefault();
+                    var itemId = this.getAttribute("data-item-id");
+                    var trElement = this.closest('tr');
+                    //trElement.remove();
+                    fetch("http://127.0.0.1:8000/remove_from_cart/", {
+                        method: "POST",
+                        body: JSON.stringify({
+                            cart_item_id:itemId,
+                            
+                        }),
+                        headers: {
+                          "Content-type": "application/json",
+                        }
+                      }).then(response => {
+                        if (response.ok) {
+                            trElement.remove();
+                            calculate();
+                        } else {
+                            console.error("Error removing item");
+                        }
+                    }).catch(error => {
+                        console.error('Error:', error);
+                    });
+            
+                  
+                });
+            });
+
+            
+              
+        });
+
+        function payrazorpay(){
+            const subtotalElement = document.getElementById('totalAmount');
+            
+            fetch("/pay_order/",{
+                method: "POST",
+                body: JSON.stringify({
+                    amount:subtotalElement.textContent.replace('$', '').split('.')[0],
+                }),
+                headers: {
+                    "Content-type": "application/json",
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            }).then(response => response.json()).then(data=>{
+                var options = {
+                    "key": "rzp_test_1y6PqdeKxXpymI", // Enter the Key ID generated from the Dashboard
+                    "amount":  data.amount, 
+                    "currency": data.currency,
+                    "name": "{{ user.username }}", //your business name
+                    "description": "Test Transaction",
+                    "image": "/static/img/logo.png",
+                    "order_id": data.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+                    "handler": function (response){
+                        {% comment %} fetch('/success_payment/',{
+                            method: "GET",
+                            headers: {
+                                "Content-type": "application/json",
+                                'X-CSRFToken': '{{ csrf_token }}'
+                            }
+                        }).then(response => response.json())
+                        .then(data => {
+                            if(data.message == 'Order confirm successfully'){
+
+                            }
+                            alert(data.message);
+                        })
+                        .catch((error) => {
+                            console.error('Error:', error);
+                            alert('An error occurred');
+                        }); {% endcomment %}
+                        
+                        window.location.href = '/success_payment/';
+                        {% comment %} 
+                        alert(response.razorpay_payment_id);
+                        alert(response.razorpay_order_id);
+                        alert(response.razorpay_signature) {% endcomment %}
+                    },
+                    "prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information, especially their phone number
+                        "name": "Abhijeet", //your customer's name
+                        "email": "abhijeetg40@gmail.com", 
+                        "contact": "7985242482"  //Provide the customer's phone number for better conversion rates 
+                    },
+                    "notes": {
+                        "address": "Razorpay Corporate Office"
+                    },
+                    "theme": {
+                        "color": "#3399cc"
+                    }
+                };
+                var rzp1 = new Razorpay(options);
+                rzp1.on('payment.failed', function (response){
+                        alert(response.error.code);
+                        alert(response.error.description);
+                        alert(response.error.source);
+                        alert(response.error.step);
+                        alert(response.error.reason);
+                        alert(response.error.metadata.order_id);
+                        alert(response.error.metadata.payment_id);
+                });
+                rzp1.open();
+                {% comment %} e.preventDefault(); {% endcomment %}
+    
+            }).catch(error => console.error('Error:', error));
+    
+           
+          
+        }
+    
+    </script>
+
+
+
+</body>
+
+
+</html>

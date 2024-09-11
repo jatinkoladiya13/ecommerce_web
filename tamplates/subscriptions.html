@@ -1,0 +1,240 @@
+{% include "header.html" %}
+
+
+<section class="subscription">
+    <div class="wrapper-subscription" >
+      {% load cutom_filters %}
+        <div class="cart-subscription" id="twenty-subscription">
+          {% if subscription.status ==  "active" %}
+            {% if subscription.plan.amount|divide_by_hundred == 20.0  %}
+            <button class="cancel-button" onclick="cancelSubscription()">
+              <i class="fas fa-times-circle"></i>
+            </button>
+            {% endif %}
+          {% endif %}
+            <h3>Basic</h3>
+            <h2>$20 <span>/Month</span></h2>
+            <p>For most business that want to optimise their web queries.</p>
+            <ul>
+              <li><i class="fa-solid fa-square-check"></i>All Limited Links</li>
+              <li><i class="fa-solid fa-square-check"></i>Own analytics Platform</li>
+              <li><i class="fa-solid fa-square-check"></i>Chat Support</li>
+              <li><i class="fa-solid fa-square-check"></i>Optimize Hashtag</li>
+              
+              <li><i class="fa-solid fa-square-check"></i>{{ subscription.plan.amount|divide_by_hundred }}</li>
+      
+            </ul>
+             {% if subscription.status ==  "active" %}
+              {% if subscription.plan.amount|divide_by_hundred == 20.0 %}
+                   <a href="#" id="update-plan" >Update Plan</a>
+              
+              {% else %}
+              
+                {% if subscription.plan.amount|divide_by_hundred == 20.0 %}
+
+                  <a href="http://127.0.0.1:8000/checkout_subscription/20">Choose Plan</a>
+
+                {% else %}
+                  
+                  <a   id="update-to-twenty">Choose Plan</a>
+              
+                {% endif %} 
+            
+              {% endif %}
+
+              
+              {% else %}
+              <a href="http://127.0.0.1:8000/checkout_subscription/20">Choose Plan</a>
+             {% endif %}
+            
+            
+          </div>  
+          <div class="cart-subscription" id="forty-subscription">
+            {% if subscription.plan.amount|divide_by_hundred == 40.0  %}
+            {% if subscription.status ==  "active" %}
+            <button class="cancel-button" onclick="cancelSubscription()">
+              <i class="fas fa-times-circle"></i>
+            </button>
+            {% endif %}
+            {% endif %}
+            <h3>Standard</h3>
+            <h2>$40 <span>/Month</span></h2>
+            <p>For most business that want to optimise their web queries.</p>
+            <ul>
+              <li><i class="fa-solid fa-square-check"></i>100 websites</li>
+              <li><i class="fa-solid fa-square-check"></i>50 GB Disk Space</li>
+              <li><i class="fa-solid fa-square-check"></i>Free Email Address</li>
+              <li><i class="fa-solid fa-square-check"></i>Free SSL Certificate</li>
+              <li><i class="fa-solid fa-square-check"></i>Unlimited Support</li>
+      
+            </ul>
+            {% if subscription.status ==  "active"%}
+              {% if subscription.plan.amount|divide_by_hundred == 40.0%}
+                <a  id="update-plan"  >Update Plan</a>
+        
+              {% else %}
+          
+                {% if subscription.plan.amount|divide_by_hundred == 40.0 %}
+            
+                  <a href="http://127.0.0.1:8000/checkout_subscription/40">Choose Plan</a>
+          
+                {% else %}
+    
+                  <a id="update-to-forty">Choose Plan</a>
+          
+                {% endif %} 
+          
+              {% endif %} 
+            {% else %}
+            
+            <a href="http://127.0.0.1:8000/checkout_subscription/40">Choose Plan</a>
+            
+            {% endif %}
+            
+           
+          </div>  
+
+          <div class="cart-subscription" id="sixty-subscription">
+            {% if subscription.status ==  "active" %}
+            {% if subscription.plan.amount|divide_by_hundred == 60.0  %}
+            <button class="cancel-button" onclick="cancelSubscription()">
+              <i class="fas fa-times-circle"></i>
+            </button>
+            {% endif %}
+            {% endif %}
+            <h3>Premium</h3>
+            <h2>$60 <span>/Month</span></h2>
+            <p>For most business that want to optimise their web queries.</p>
+            <ul>
+              <li><i class="fa-solid fa-square-check"></i>250 websites</li>
+              <li><i class="fa-solid fa-square-check"></i>100 GB Disk Space</li>
+              <li><i class="fa-solid fa-square-check"></i>Free Email Address</li>
+              <li><i class="fa-solid fa-square-check"></i>Free SSL Certificate</li>
+              <li><i class="fa-solid fa-square-check"></i>Unlimited Support</li>
+      
+            </ul>
+            {% if subscription.status ==  "active"%}
+              {% if subscription.plan.amount|divide_by_hundred == 60.0%}
+                <a  id="update-plan"  >Update Plan</a>
+        
+              {% else %}
+          
+                {% if subscription.plan.amount|divide_by_hundred == 60.0 %}
+            
+                  <a href="http://127.0.0.1:8000/checkout_subscription/60">Choose Plan</a>
+          
+                {% else %}
+    
+                  <a id="update-to-sixty">Choose Plan</a>
+          
+                {% endif %} 
+          
+              {% endif %} 
+            {% else %}
+            
+            <a href="http://127.0.0.1:8000/checkout_subscription/60">Choose Plan</a>
+            
+            {% endif %}
+            
+           
+          </div> 
+      </div>
+</section>
+
+ <script>
+
+  function cancelSubscription() {
+    window.location.href = "/cancel_subscription/"
+
+  }
+
+
+  document.addEventListener('DOMContentLoaded', function() {
+    var amountDivided = {{ subscription.plan.amount|divide_by_hundred}};
+  
+    var twenty_subscription = document.getElementById('twenty-subscription');
+    var forty_subscription = document.getElementById('forty-subscription');
+    var sixty_subscription = document.getElementById('sixty-subscription');
+
+    var update_plan = document.getElementById("update-plan");
+
+    var update_to_twenty = document.getElementById('update-to-twenty');
+    var update_to_forty  = document.getElementById('update-to-forty');
+    var update_to_sixty = document.getElementById('update-to-sixty');
+
+    let checkUpdate = false;
+
+
+    
+    const subscriptionStatus = "{{ subscription.status }}";
+    if(subscriptionStatus == "active"){
+      if(amountDivided != 20){
+
+        twenty_subscription.style.opacity = 0.5;
+      
+      } if(amountDivided != 40 ){
+
+        forty_subscription.style.opacity = 0.5;
+      
+      } if(amountDivided != 60){
+        sixty_subscription.style.opacity = 0.5;
+      }
+    }
+    update_plan.addEventListener('click', function () {
+       if(amountDivided == 20){
+        twenty_subscription.style.opacity = 0.5;
+       }if (amountDivided == 40){
+
+        forty_subscription.style.opacity = 0.5;
+       }if(amountDivided == 60){
+        sixty_subscription.style.opacity = 0.5;
+       }
+      
+      if(amountDivided != 20){
+
+        twenty_subscription.style.opacity =1;
+      
+      }  if(amountDivided != 40 ){
+        forty_subscription.style.opacity = 1;
+      } if(amountDivided != 60){
+        sixty_subscription.style.opacity = 1;
+      }
+
+      checkUpdate = true;
+  });
+
+  if(update_to_twenty){
+    update_to_twenty.addEventListener('click', function(){
+      if(checkUpdate){
+       window.location.href = "http://127.0.0.1:8000/update_subscription/20"
+      }
+   });
+ 
+  }
+  
+  if(update_to_forty){
+    update_to_forty.addEventListener('click', function(){
+      if(checkUpdate){
+       window.location.href = "http://127.0.0.1:8000/update_subscription/40"
+      }
+   });
+  }
+  
+
+  if(update_to_sixty){
+    update_to_sixty.addEventListener('click', function(){
+      if(checkUpdate){
+        window.location.href="http://127.0.0.1:8000/update_subscription/60"
+      }
+    });
+  }
+  
+   
+});
+
+ </script>
+
+</body>
+
+
+</html>

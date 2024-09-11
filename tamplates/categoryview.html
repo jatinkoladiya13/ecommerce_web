@@ -1,0 +1,180 @@
+{% extends "sidebar.html" %}
+{% block content %}
+
+
+<div class="dialog-container" id="dialogContainer">
+    <div class="dialog-box">
+        <p id="dialogText"></p>
+      <div class="btn-container">
+        <button class="button" onclick="confirmDelete()">Yes</button>
+        <button class="button" onclick="closeDialog()">NO</button>
+      </div>
+    </div>
+  </div>
+
+{% if data %}
+
+{% for categorys in data  %}
+<div class="single">
+    <h3 class="main-titles">{{categorys.id}}.  <span class="category-name">{{ categorys }}</span></h3> 
+    <div class="buttons-container">
+        <button class="button delete-btn"  data-category-id="{{ categorys.id }}" onclick="openDialog('{{ categorys}}', '{{categorys.id}}')">Delete</button>
+        <button class="button update-btn" onclick="showEditInput(this, '{{categorys.id}}')" >Update</button>
+        <button class="button save-btn" style="display: none;" onclick="saveUpdatedCategory(this, '{{categorys.id}}')">Save</button>
+    </div>
+  </div>
+
+{% endfor %}
+
+
+{% else %}
+
+<div class="emptysmall">
+
+  <h3>Empty</h3>
+</div>
+
+
+{% endif %}
+
+<script>
+  
+
+    let currentCategoryId =  '';
+    
+    function openDialog(categoryName, categoryId) {
+      currentCategoryId = categoryId;
+      dialogText.textContent = `Are you sure you want to delete '${categoryName}'?`;
+      dialogText.style.color ='#fff';
+      dialogContainer.style.display = 'flex';
+  
+    }
+  
+    function closeDialog() {
+        dialogContainer.style.display = 'none';
+    }
+    
+    function confirmDelete(){
+       
+      
+        fetch("/category_delete/",{
+            method:"POST",
+            body: JSON.stringify({
+             "category_id":currentCategoryId,
+            }),
+            headers: {
+                "Content-type": "application/json",
+            }
+        }).then(response => {
+            if (response.ok) {
+                dialogContainer.style.display = 'none';
+                window.location.reload();
+  
+            } else {
+                console.error("Error category not delete");
+            }
+        }).catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+
+    let currentlyEditing = null;
+    let previousInputValue = null;
+    function showEditInput(button, id){
+      const singleDiv = button.closest('.single');
+      const categoryTitle = singleDiv.querySelector('.main-titles');
+      const categoryName = categoryTitle.querySelector('.category-name');
+      const containerButton  = singleDiv.querySelector(".buttons-container"); 
+      const  deleteButton = containerButton.querySelector(".delete-btn"); 
+
+
+      if (currentlyEditing !== null && currentlyEditing !== singleDiv) {
+        // Close the currently open edit
+        previousInputValue = inputField.value.trim();
+        closeEdit(currentlyEditing, id,);
+        }
+    
+
+      const inputField = document.createElement('input');
+      inputField.type = 'text';
+      inputField.classList.add('my-input-class');
+      inputField.value = categoryName.textContent;
+      
+      categoryTitle.innerHTML = '';
+      categoryTitle.appendChild(inputField);
+      
+      button.style.display = 'none';
+      deleteButton.style.display ='none';
+      const saveBtn = singleDiv.querySelector('.save-btn');
+      saveBtn.style.display = 'block';
+      currentlyEditing = singleDiv;
+    }
+
+    function saveUpdatedCategory(button, id){
+      const singleDiv = button.closest('.single');
+      const categoryTitle = singleDiv.querySelector('.main-titles');
+      const inputField = categoryTitle.querySelector('input');
+      const categoryName = inputField.value.trim();
+      const containerButton  = singleDiv.querySelector(".buttons-container"); 
+      const  deleteButton = containerButton.querySelector(".delete-btn"); 
+
+      
+      if (categoryName === '') {
+        // Restore previous value if input is empty
+        categoryName = previousInputValue;
+    }
+      const updateBtn = singleDiv.querySelector('.update-btn');
+    
+
+
+        fetch("/category_update/",{
+          method:"POST",
+          body: JSON.stringify({
+           "category_id":id,
+           "categoryName":categoryName,
+          }),
+          headers: {
+              "Content-type": "application/json",
+          }
+      }).then(response => {
+          if (response.ok) {
+            updateBtn.style.display = 'block';
+            deleteButton.style.display = 'block';  
+            button.style.display = 'none';
+            categoryTitle.innerHTML = `${id}. <span class="category-name">${categoryName}</span>`;
+
+          } else {
+              console.error("Error this category is not update");
+          }
+      }).catch(error => {
+          console.error('Error:', error);
+      });
+      currentlyEditing = null;
+      previousInputValue = null;
+    }
+
+    function closeEdit(singleDiv, id,) {
+      const categoryTitle = singleDiv.querySelector('.main-titles');
+      const inputField = categoryTitle.querySelector('input');
+      const categoryName = inputField.value.trim();
+      
+      // Restore the category name without saving changes
+      const originalName = previousInputValue !== null ? previousInputValue : categoryName;
+      categoryTitle.innerHTML = `${singleDiv.dataset.categoryId}. <span class="category-name">${originalName}</span>`;
+      
+      const deleteBtn = singleDiv.querySelector('.delete-btn');
+      deleteBtn.style.display = 'block';
+
+      const updateBtn = singleDiv.querySelector('.update-btn');
+      updateBtn.style.display = 'block';
+      
+      const saveBtn = singleDiv.querySelector('.save-btn');
+      saveBtn.style.display = 'none';
+
+      currentlyEditing = null;
+      previousInputValue = null;  
+  }
+  </script>
+
+{% endblock content %}
