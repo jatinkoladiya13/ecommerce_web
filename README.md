@@ -70,8 +70,8 @@ A complete e-commerce web application built with **Django**, featuring product b
 
 - **Backend**: Django
 - **Frontend**: HTML, CSS, Bootstrap, JavaScript
-- **Database**: SQLite (dev), PostgreSQL (prod ready)
-- **Payments**: Stripe Integration
+- **Database**: SQLite (dev)
+- **Payments**: Stripe and razorpay Integration
 - **Authentication**: Session-based
 - **Subscriptions**: Stripe recurring billing
 
