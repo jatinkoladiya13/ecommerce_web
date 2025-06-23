@@ -529,7 +529,6 @@ def product_delete(request):
         except Product.DoesNotExist:
             pass    
 
-
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
 
