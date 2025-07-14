@@ -3,6 +3,9 @@
 import os
 import sys
 import dotenv
+import warnings
+warnings.filterwarnings("ignore", category=UserWarning, module='razorpay')
+
 
 
 def main():
